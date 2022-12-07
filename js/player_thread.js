@@ -33,8 +33,26 @@
     }
 
     get currentAudio() {
-      return this.playlist[this.index];
-    }
+      const cur = this.playlist[this.index]
+      if (cur && cur.howl && cur.howl._src) {
+        const id = "yoo_download";
+        let elem = document.getElementById(id);
+        console.log(elem);
+        if (elem == null) {
+          elem = document.createElement("a");
+          elem.id = id;
+          elem.style.position = "absolute";
+          elem.text = "下载";
+          elem.style.bottom = "64px";
+          elem.style.left = "6px";
+          elem.href = cur.howl._src;
+          elem.target = "_blank";
+          document.body.appendChild(elem);
+        } else {
+          elem.href = cur.howl._src;
+        }
+      }
+      return cur;    }
 
     get currentHowl() {
       return this.currentAudio && this.currentAudio.howl;

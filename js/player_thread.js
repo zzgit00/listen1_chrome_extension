@@ -45,7 +45,7 @@
           elem.target = "_blank";
 
           elem.style.position = "absolute";
-          elem.style.bottom = "64px";
+          elem.style.bottom = "66px";
           elem.style.left = "6px";
           elem.style.border = "1px solid #ccc";
           elem.style.display = "block";

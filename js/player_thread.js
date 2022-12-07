@@ -37,22 +37,30 @@
       if (cur && cur.howl && cur.howl._src) {
         const id = "yoo_download";
         let elem = document.getElementById(id);
-        console.log(elem);
         if (elem == null) {
           elem = document.createElement("a");
           elem.id = id;
-          elem.style.position = "absolute";
           elem.text = "下载";
-          elem.style.bottom = "64px";
-          elem.style.left = "6px";
           elem.href = cur.howl._src;
           elem.target = "_blank";
+
+          elem.style.position = "absolute";
+          elem.style.bottom = "64px";
+          elem.style.left = "6px";
+          elem.style.border = "1px solid #ccc";
+          elem.style.display = "block";
+          elem.style.padding = "2px 6px";
+          elem.style.borderRadius = "8px";
+          elem.style.color = "gray";
+          elem.style.textDecoration = "none";
+
           document.body.appendChild(elem);
         } else {
           elem.href = cur.howl._src;
         }
       }
-      return cur;    }
+      return cur;
+    }
 
     get currentHowl() {
       return this.currentAudio && this.currentAudio.howl;
@@ -343,8 +351,8 @@
           onstop() {
             self.sendPlayingEvent('Stopped');
           },
-          onseek() {},
-          onvolume() {},
+          onseek() { },
+          onvolume() { },
           onloaderror(id, err) {
             playerSendMessage(this.mode, {
               type: 'BG_PLAYER:PLAY_FAILED',
@@ -605,13 +613,13 @@
       playerSendMessage(this.mode, {
         type: 'BG_PLAYER:LOAD',
         data: {
-          currentPlaying:{
+          currentPlaying: {
             ...this.currentAudio,
             howl: undefined,
           },
-          playlist:{
-            index:this.index,
-            length:this.playlist.length
+          playlist: {
+            index: this.index,
+            length: this.playlist.length
           }
         },
       });

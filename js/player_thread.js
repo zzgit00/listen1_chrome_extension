@@ -32,17 +32,47 @@
       }, 1000 / rate);
     }
 
+    getSuffix(name) {
+      return name.substring(name.lastIndexOf(".") + 1)
+    }
+
+    urlToBlob(file_url, cb) {
+      let xhr = new XMLHttpRequest();
+      xhr.open("get", file_url, true);
+      xhr.responseType = "blob";
+      xhr.onload = function () {
+        if (this.status == 200) {
+          cb(this.response);
+        }
+      };
+      xhr.send();
+    }
+
     get currentAudio() {
       const cur = this.playlist[this.index]
-      if (cur && cur.howl && cur.howl._src) {
-        const id = "yoo_download";
-        let elem = document.getElementById(id);
+      const id = "yoo_download";
+      let elem = document.getElementById(id);
+      const onclick = () => {
+        if (elem != null && cur && cur.howl && typeof cur.howl._src == 'string') {
+          this.urlToBlob(cur.howl._src, (response) => {
+            const link = document.createElement("a");
+            link.style.display = "none";
+            link.href = URL.createObjectURL(response);
+            link.download = elem.download;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          });
+        }
+      }
+
+      if (cur && cur.howl && typeof cur.howl._src == 'string') {
+        const download = cur.title + "." + this.getSuffix(cur.howl._src);
         if (elem == null) {
           elem = document.createElement("a");
           elem.id = id;
           elem.text = "下载";
-          elem.href = cur.howl._src;
-          elem.target = "_blank";
+          elem.download = download;
 
           elem.style.position = "absolute";
           elem.style.bottom = "66px";
@@ -53,10 +83,20 @@
           elem.style.borderRadius = "8px";
           elem.style.color = "gray";
           elem.style.textDecoration = "none";
+          elem.onclick = onclick;
 
           document.body.appendChild(elem);
+
         } else {
-          elem.href = cur.howl._src;
+          if (elem.download != download) {
+            elem.download = download;
+            elem.style.display = "block";
+            elem.onclick = onclick;
+          }
+        }
+      } else {
+        if (elem != null) {
+          elem.style.display = "none";
         }
       }
       return cur;
